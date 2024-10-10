@@ -1,0 +1,451 @@
+\documentclass[notes,professionalfont,11pt,usenames,dvipsnames]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{pxfonts}
+\usepackage{eulervm}
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{tikz}
+\usetikzlibrary{plothandlers,plotmarks,arrows,automata}
+\usepackage{amsmath,amssymb}
+\usepackage{colortbl}
+\usepackage{mathrsfs}
+\renewcommand{\mathcal}{\mathscr}
+\usepackage{enumerate}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bdm}{\begin{displaymath}}
+\newcommand{\edm}{\end{displaymath}}
+\newcommand{\demi}{\frac{1}{2}}
+\newcommand{\pr}{{\rm pr}}
+\newcommand{\nc}{\newcommand}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\ds}{\displaystyle}
+
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\bz}{\mathbf{z}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\bP}{\mathbf{P}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bepsilon}{\boldsymbol{\epsilon}}
+
+\newcommand{\bbeta}{\boldsymbol{\beta}}
+\newcommand{\bgamma}{\boldsymbol{\gamma}}
+
+\newcommand\smpl{\mathcal{D}_n}
+\newcommand\dsplnt{\displaystyle\int}
+\newcommand{\disp}{\displaystyle}
+
+
+\newcommand{\esp}{\mathbb E}
+\newcommand{\prob}{\mathbb P}
+\newcommand{\ee}{\mathrm e}
+\newcommand{\ii}{\mathrm i}
+\newcommand{\dd}{\text{d}}
+\newcommand{\Int}{\mathrm{int}\,}
+\newcommand{\Cl}{\mathrm{adh}\,}
+\newcommand{\Supp}{\operatorname{Supp}}
+\newcommand{\Card}{\operatorname{Card}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Ave}{\operatorname{Ave}}
+\renewcommand{\mathcal}{\mathscr}
+
+\newcommand{\logit}{\operatorname{logit}}
+\renewcommand{\epsilon}{\varepsilon}
+\newcommand{\eps}{\varepsilon}
+\newfont{\manfnt}{manfnt}
+\newcommand{\danger}{{\manfnt\symbol{'177}}}
+\newcommand{\mdanger}{\marginpar[\hfill\danger]{\danger\hfill}}
+\newcommand{\new}{{\manfnt\symbol{30}}}
+\newcommand{\mnew}{\marginpar[\hfill\new]{\hfill\new}}
+\renewcommand{\P}{\mathbb{P}}
+
+\newcommand{\tbrown}[1]{\textcolor{brown}{#1}}
+\DeclareTextFontCommand{\hershey}{\fontfamily{hscs}\selectfont}
+\newcommand{\tb}{\color{brown}}
+
+\usetheme{Boadilla}
+\usecolortheme{rose}
+
+\newcommand\justify{\rightskip0pt \leftskip0pt}
+
+%\usetheme{Goettingen}
+
+\newenvironment{slide}
+{\begin{frame}[environment=slide]
+\frametitle{\insertsection \\ \insertsubsection}\justify\setlength{\parskip}{0.5cm}\vspace{-0.5cm}}
+{\end{frame}}
+
+
+\setbeamersize{text margin left=1cm}
+\setbeamersize{text margin right=1cm}
+
+%\setbeamersize{sidebar width left=1cm}
+%\setbeamersize{sidebar width right=1cm}
+
+\makeatletter
+\newcommand{\setnextsection}[1]{%
+  \setcounter{section}{\numexpr#1-1\relax}%
+  \beamer@tocsectionnumber=\numexpr#1-1\relax\space}
+\makeatother
+
+\setbeamertemplate{itemize items}[triangle]
+\setbeamercolor{itemize item}{fg=brown}
+\setbeamertemplate{enumerate items}[circle]
+\setbeamercolor{item projected}{bg=brown}
+\setbeamercolor{block title}{fg=brown!100, bg=gray!20}
+\setbeamercolor{block body}{bg=gray!10}
+
+\title[Linear models]{The case of linear models}
+\author[Jean-Michel Marin]{Jean-Michel Marin}
+
+\institute[IMAG]{University of Montpellier \\
+Faculty of Sciences}
+
+\date[HAX918X]{HAX918X / 2024-2025}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\frame{\tableofcontents} 
+
+\section{The model}
+
+\begin{slide}
+
+The dataset is then made up of the reunion of the vector of outcomes
+$$
+\by=\left(y_1,\ldots,y_n\right)
+$$
+
+
+and the $n\times p$ matrix of explanatory variables
+$$
+\bX=\left[\bx_1 \quad \ldots\quad \bx_p\right]=\left[\begin{array}{ccccc}
+ x_{11} & x_{12} & \ldots & x_{1p} \\
+ x_{21} & x_{22} & \ldots & x_{2p} \\
+ x_{31} & x_{32} & \ldots & x_{3p} \\
+ \vdots & \vdots & \vdots & \vdots \\
+ x_{n1} & x_{n2} & \ldots & x_{np}
+\end{array}\right] 
+$$
+
+\end{slide}
+
+\begin{slide}
+
+The ordinary Gaussian linear regression model is such that
+$$
+\by|\alpha,\bbeta,\sigma^2
+\sim\mathcal{N}_n\left(\alpha\mathbf{1}_n+\bX \bbeta,\sigma^2\,\mathbf{I}_n\right)
+$$
+
+The $y_i$ are independent Gaussian random variables with
+$$
+\mathbb{E}[y_i|\alpha,\bbeta,\sigma^2]=\alpha+\beta_1
+x_{i1}+\ldots+\beta_p x_{ip}
+$$
+$$
+\mathbb{V}[y_i|\alpha,\bbeta,\sigma^2]=\sigma^2
+$$
+
+We omit the conditioning on $\bX$ to simplify the notations
+
+\end{slide}
+
+\begin{slide}
+
+We assume that $\mbox{rank}\left[\mathbf{1}_n \quad \bX\right]=p+1$ \\
+{\bf \color{red} identifiability contraint}
+ 
+$$
+\ell(\alpha,\bbeta,\sigma^2|\by)=\frac{1}{\left(2\pi\sigma^2\right)^{n/2}} \exp\left\{-\frac{1}{2\sigma^2}\right.
+$$
+$$
+\left.\left(\by-\alpha\mathbf{1}_n-\bX\bbeta\right)^\text{T}\left(\by-\alpha\mathbf{1}_n-\bX\bbeta\right)\right\}
+$$
+
+\end{slide}
+
+\section{Natural conjugate prior family}
+
+\begin{slide}
+
+$$
+(\alpha,\bbeta)|\sigma^2\sim\mathcal{N}_{p+1}((\tilde\alpha,\tilde\bbeta),\sigma^2M^{-1})
+$$
+
+$$
+\sigma^2\sim \mathcal{IG}(a,b)
+$$
+
+{\bf \color{red} Even in the presence of
+genuine information on the parameters, the hyperparameters $M$, $a$ and $b$ are
+very difficult to specify and the posterior distributions}
+
+Ridge regression: $(\tilde\alpha,\tilde\bbeta)=0_{p+1}$ and $M=\lambda I_n$
+
+\end{slide}
+
+\section{Zellner's $G$-prior}
+
+\begin{slide}
+
+{\bf\color{red} $\bX$ is centered}
+
+$$
+\bbeta|\alpha,\sigma^2\sim \mathcal{N}_p\left(\tilde\bbeta,g\sigma^2(\bX^\text{T}\bX)^{-1}\right)
+$$
+and a noninformative prior distribution is imposed on the pair $(\alpha,\sigma^2)$
+$$
+\pi\left(\alpha,\sigma^2\right)\propto \sigma^{-2}
+$$
+
+\end{slide}
+
+\begin{slide}
+
+The factor $g$ can be interpreted as being
+inversely proportional to the amount of information available in the
+prior relative to the sample
+
+For instance, setting $g=n$ gives the prior the
+same weight as one observation of the sample
+
+We will use this as our default value
+
+\end{slide}
+
+\begin{slide}
+
+When $p>0$
+$$
+\alpha|\sigma^2,\by\sim\mathcal{N}_1\left(\bar\by,\sigma^2/n\right)
+$$
+$$
+\bbeta|\by,\sigma^2\sim\mathcal{N}_p\left(\frac{g}{g+1}\left(\hat\bbeta+\tilde\bbeta/g\right)
+\frac{\sigma^2g}{g+1}\left\{\bX^\text{T}\bX\right\}^{-1}\right)
+$$
+where $\hat\bbeta=\left\{\bX^\text{T}\bX\right\}^{-1}\bX^\text{T}\by$ 
+is the maximum likelihood and least squares estimator of $\bbeta$
+
+{\bf\color{red} The posterior independence between $\alpha$ and $\bbeta$ is due to the fact that $\bX$ is centered 
+and that $\alpha$ and $\bbeta$ are a priori independent}
+
+\end{slide}
+
+\begin{slide}
+
+$$
+\sigma^2|\by\sim I\mathcal{G}\left[(n-1)/2,s^2+(\tilde\bbeta-
+\hat\bbeta)^\text{T}\bX^\text{T}\bX(\tilde\bbeta-\hat\bbeta)\big/(g+1)\right]
+$$
+where $s^2=(\by-\bar\by\mathbf{1}_n-\bX\hat\bbeta)^\text{T}(\by-\bar\by\mathbf{1}_n-\bX\hat\bbeta)$
+
+When $p=0$, 
+$$
+\alpha|\by,\sigma^2\sim\mathcal{N}\left(\bar\by,\sigma^2/n\right)
+$$
+$$
+\sigma^2|\by\sim I\mathcal{G}\left[(n-1)/2,(\by-\bar\by\mathbf{1}_n)^\text{T}(\by-\bar\by\mathbf{1}_n)\big/2\right]
+$$
+
+\end{slide}
+
+\begin{slide}
+
+We can derive from the previous derivations that
+$$
+\E^\pi\left[\alpha|\by\right]=\E^\pi\left[\E^\pi\left(\alpha|\sigma^2,\by\right)|\by\right]
+=\E^\pi\left[\bar\by|\by\right]=\bar\by
+$$
+
+\vspace{-1cm}\begin{align*}
+\E^\pi\left[\bbeta|\by\right]&=
+\E^\pi\left[\E^\pi\left(\bbeta|\sigma^2,\by\right)\big|\by\right]\\
+&= \E^\pi\left[\frac{g}{g+1}(\hat\bbeta+\tilde\bbeta/g)\big|\by\right]\\
+&= \frac{g}{g+1}(\hat\bbeta+\tilde\bbeta/g)
+\end{align*}
+
+This result gives its meaning to the above point relating $g$ with the amount
+of information contained in the dataset
+
+\end{slide}
+
+\begin{slide}
+
+$$
+\E^\pi\left[\bbeta|\by\right]=\frac{g}{g+1}(\hat\bbeta+\tilde\bbeta/g)
+$$
+
+When $g=1$, the prior information has the same weight as this amount: the Bayesian
+estimate of $\bbeta$ is the average between the least square estimator and the
+prior expectation
+
+{\bf\color{red} The larger $g$ is, the weaker the prior information and the
+closer the Bayesian estimator is to the least squares estimator}
+
+\end{slide}
+
+\begin{slide}
+
+If $p\neq 0$, the evidence of the linear regression model is
+$$
+f(\by)=\int\left(\int\int f(\by|\alpha,\bbeta,\sigma^2)
+\pi(\bbeta|\alpha,\sigma^2)\pi(\sigma^2,\alpha)\text{d}\alpha\text{d}\bbeta\right)\text{d}\sigma^2
+$$
+
+$$
+f(\by)=\frac{\delta\Gamma((n-1)/2)}{\pi^{(n-1)/2}n^{1/2}}(g+1)^{-p/2}\kappa^{-(n-1)/2}
+$$
+
+$\kappa=s^2+(\tilde\bbeta-\hat\bbeta)^\text{T}\bX^\text{T}\bX(\tilde\bbeta-\hat\bbeta)\big/(g+1)$
+
+\end{slide}
+
+\begin{slide}
+
+If $p=0$, a similar expression emerges, the evidence of the null model is
+$$
+f(\by)=\int\left(\int f(\by|\alpha,\sigma^2)\pi(\alpha,\sigma^2)
+\text{d}\alpha\right)\text{d}\sigma^2
+$$
+
+$$
+f(\by)=\frac{\delta\Gamma((n-1)/2)}{\pi^{(n-1)/2}n^{1/2}}
+\left[(\by-\bar\by\mathbf{1}_n)^\text{T}(\by-\bar\by\mathbf{1}_n)\right]^{-(n-1)/2}
+$$
+
+\end{slide}
+
+\section{Model choice}
+
+\begin{slide}
+
+The computation of model's posterior probabilities is plagued by the inability to include 
+generic improper prior distributions
+
+In order to bypass this difficulty, we will assume that all the linear models
+under comparison do include the parameter $\alpha$, which means that each
+regression model includes an intercept
+
+This assumption allows us to take the
+{\em same} improper prior on $(\alpha,\sigma^2)$ for all of those models
+
+\end{slide}
+
+\begin{slide}
+
+When we compare two sets of regressors, we have to handle two regression matrices, $\bX^1$ and $\bX^2$,
+with respective dimensions $(n,p_1)$ and $(n,p_2)$
+
+$$
+\P^\pi(\mathfrak{M}=1|\by)\propto  (g_1+1)^{-p_1/2}
+$$
+$$\left[s_1^2+(\tilde\bbeta^1-\hat\bbeta^1)^\text{T}(\bX^1)^\text{T}\bX^1
+(\tilde\bbeta^1-\hat\bbeta^1)\big/(g_1+1)\right]^{-(n-1)/2}
+$$
+
+$$
+\P^\pi(\mathfrak{M}=2|\by)\propto (g_2+1)^{-p_2/2}
+$$
+$$
+\left[s_2^2+(\tilde\bbeta^2-\hat\bbeta^2)^\text{T}(\bX^2)^\text{T}\bX^2
+(\tilde\bbeta^2-\hat\bbeta^2)\big/(g_2+1)\right]^{-(n-1)/2}
+$$
+
+\end{slide}
+
+\section{Prediction}
+
+\begin{slide}
+
+The prediction of $m\ge 1$ future observations from units for which the
+explanatory variables $\tilde \bX$
+have been observed or set is also based on the posterior distribution
+
+The $m$-vector $\tilde \by$  have a Gaussian distribution with expectation
+$\alpha\mathbf{1}_m+\tilde \bX\bbeta$ and variance $\sigma^2\mathbf{I}_m$ 
+
+\end{slide}
+
+\begin{slide}
+
+Conditional on $\sigma^2$, the vector $\tilde\by$ of future observations has a Gaussian distribution
+
+We can derive its expectation by averaging over $\alpha$ and $\bbeta$
+\begin{eqnarray*}
+\mathbb{E}^\pi[\tilde \by|\sigma^2,\by]
+& = & \mathbb{E}^\pi[\mathbb{E}^\pi(\tilde \by|\alpha,\bbeta,\sigma^2,\by)|\sigma^2,\by] \\
+                                  & = & \mathbb{E}^\pi[\alpha\mathbf{1}_m+\tilde\bX\bbeta|\sigma^2,\by] \\
+                                  & = & \hat\alpha\mathbf{1}_m+\tilde\bX\frac{\tilde\bbeta+g\hat\bbeta}{g+1}
+\end{eqnarray*}
+
+This representation is quite intuitive,
+being the product of the matrix of explanatory variables $\tilde\bX$ by the Bayesian estimator
+of $\bbeta$
+
+\end{slide}
+
+\begin{slide}
+
+Similarly, we can compute
+\begin{eqnarray*}
+\mathbb{V}^\pi(\tilde \by|\sigma^2,\by)
+& = & \mathbb{E}^\pi[\mathbb{V}^\pi(\tilde \by|\alpha,\bbeta,\sigma^2,\by)|\sigma^2,\by] \\
+                  &&\quad +\mathbb{V}^\pi(\mathbb{E}^\pi(\tilde \by|\alpha,\bbeta,\sigma^2,\by)|\sigma^2,\by) \\
+                  &=& \mathbb{E}^\pi[\sigma^2I_m|\sigma^2,\by]+\mathbb{V}^\pi(\alpha\mathbf{1}_m+\tilde X\bbeta|\sigma^2,\by) \\
+                  &=& \sigma^2\left(I_m+\frac{g}{g+1}\tilde\bX(\bX^\text{T}\bX)^{-1}\tilde \bX^\text{T} \right)
+\end{eqnarray*}
+
+Due to this factorisation, and the fact that the conditional expectation does not depend on $\sigma^2$, we thus
+obtain 
+$$
+\mathbb{V}^\pi(\tilde\by|\by)=\hat\sigma^2\left(I_m+\frac{g}{g+1}
+\tilde\bX(\bX^\text{T}\bX)^{-1}\tilde\bX^\text{T}\right)
+$$
+
+\end{slide}
+
+\begin{slide}
+
+Conditionally on $\sigma^2$, the posterior predictive
+variance has two terms, the first term being $\sigma^2I_m$, which corresponds to the sampling variation, and
+the second one being $\sigma^2\frac{g}{g+1}\tilde\bX(\bX^\text{T}\bX)^{-1}\tilde\bX^\text{T}$, which corresponds to the 
+uncertainty about $\bbeta$
+
+HPD credible regions and tests can then be conducted based on this conditional predictive distribution
+$$
+\tilde \by|\by,\sigma^2 \sim \mathcal{N}
+\left(\mathbb{E}^\pi[\tilde \by],\mathbb{V}^\pi(\tilde \by|\by,\sigma^2) \right)
+$$
+
+\end{slide}
+
+\begin{slide}
+
+Integrating $\sigma^2$ out to produce the marginal distribution of $\tilde\by$ 
+leads to a multivariate Student's $t$ distribution 
+\begin{eqnarray*}
+\tilde \by|\by & \sim & \mathcal{T}_m\left(n,\hat\alpha\mathbf{1}_m + g\tilde\bbeta/(g+1),\right. \\
+&&\quad\frac{s^2+\hat\bbeta^\text{T} \bX^\text{T}\bX \hat\bbeta}{n} \,
+\left.\left\{\mathbf{I}_m+\tilde\bX(\bX^\text{T} \bX)^{-1}\tilde\bX^\text{T} \right\}\right)
+\end{eqnarray*}
+
+\label{lastslide}
+
+\end{slide}
+
+\end{document}

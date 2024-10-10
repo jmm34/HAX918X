@@ -1,0 +1,6 @@
+\beamer@sectionintoc {1}{Standard Monte Carlo method}{3}{0}{1}
+\beamer@sectionintoc {2}{Importance Sampling methods}{13}{0}{2}
+\beamer@sectionintoc {3}{Reminders and Additions on Markov Chains}{22}{0}{3}
+\beamer@sectionintoc {4}{Convergence of Markov chains}{31}{0}{4}
+\beamer@sectionintoc {5}{The Metropolis-Hastings algorithm}{35}{0}{5}
+\beamer@sectionintoc {6}{The Gibbs sampler}{40}{0}{6}

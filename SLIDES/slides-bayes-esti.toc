@@ -1,0 +1,6 @@
+\beamer@sectionintoc {1}{The Bayesian paradigm}{3}{0}{1}
+\beamer@sectionintoc {2}{Bayesian estimates}{21}{0}{2}
+\beamer@sectionintoc {3}{Conjugate prior}{24}{0}{3}
+\beamer@sectionintoc {4}{Noninformative prior}{29}{0}{4}
+\beamer@sectionintoc {5}{Jeffreys prior}{32}{0}{5}
+\beamer@sectionintoc {6}{Bayesian Credible Intervals}{34}{0}{6}

@@ -1,0 +1,244 @@
+\documentclass[notes,professionalfont,11pt,usenames,dvipsnames]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{pxfonts}
+\usepackage{eulervm}
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{tikz}
+\usetikzlibrary{plothandlers,plotmarks,arrows,automata}
+\usepackage{amsmath,amssymb}
+\usepackage{colortbl}
+\usepackage{mathrsfs}
+\renewcommand{\mathcal}{\mathscr}
+\usepackage{enumerate}
+
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newcommand{\disp}{\displaystyle}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\vs}{\bigskip}
+\newcommand{\esp}{\mathbb E}
+\newcommand{\prob}{\mathbb P}
+\newcommand{\ee}{\mathrm e}
+\newcommand{\ii}{\mathrm i}
+\newcommand{\dd}{\text{d}}
+\newcommand{\Int}{\mathrm{int}\,}
+\newcommand{\Cl}{\mathrm{adh}\,}
+\newcommand{\Supp}{\operatorname{Supp}}
+\newcommand{\Card}{\operatorname{Card}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Ave}{\operatorname{Ave}}
+\renewcommand{\mathcal}{\mathscr}
+
+\newcommand{\logit}{\operatorname{logit}}
+\renewcommand{\epsilon}{\varepsilon}
+\newcommand{\eps}{\varepsilon}
+\newfont{\manfnt}{manfnt}
+\newcommand{\danger}{{\manfnt\symbol{'177}}}
+\newcommand{\mdanger}{\marginpar[\hfill\danger]{\danger\hfill}}
+\newcommand{\new}{{\manfnt\symbol{30}}}
+\newcommand{\mnew}{\marginpar[\hfill\new]{\hfill\new}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\tbrown}[1]{\textcolor{brown}{#1}}
+\DeclareTextFontCommand{\hershey}{\fontfamily{hscs}\selectfont}
+\newcommand{\tb}{\color{brown}}
+
+\usetheme{Boadilla}
+\usecolortheme{rose}
+
+\newcommand\justify{\rightskip0pt \leftskip0pt}
+
+%\usetheme{Goettingen}
+
+\newenvironment{slide}
+{\begin{frame}[environment=slide]
+\frametitle{\insertsection \\ \insertsubsection}\justify\setlength{\parskip}{0.5cm}\vspace{-0.5cm}}
+{\end{frame}}
+
+
+\setbeamersize{text margin left=1cm}
+\setbeamersize{text margin right=1cm}
+
+%\setbeamersize{sidebar width left=1cm}
+%\setbeamersize{sidebar width right=1cm}
+
+\makeatletter
+\newcommand{\setnextsection}[1]{%
+  \setcounter{section}{\numexpr#1-1\relax}%
+  \beamer@tocsectionnumber=\numexpr#1-1\relax\space}
+\makeatother
+
+\setbeamertemplate{itemize items}[triangle]
+\setbeamercolor{itemize item}{fg=brown}
+\setbeamertemplate{enumerate items}[circle]
+\setbeamercolor{item projected}{bg=brown}
+\setbeamercolor{block title}{fg=brown!100, bg=gray!20}
+\setbeamercolor{block body}{bg=gray!10}
+
+\title[Simulation]{Simulation of random variables}
+\author[Jean-Michel Marin]{Jean-Michel Marin}
+
+\institute[IMAG]{University of Montpellier \\
+Faculty of Sciences}
+\date[HAX918X]{HAX918X / 2024-2025}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\frame{\tableofcontents} 
+
+\section{Methods involving the uniform distribution on $[0,1]$}
+
+\begin{slide}
+
+{\bf Proposition} Let $X$ be a real random variable ($X(\Omega)\subseteq \mathbb{R}$), 
+with cumulative distribution function 
+$F(x)=\P(X\leq x)=\int_{-\infty}^x f(u)d\mu(u)$
+\begin{itemize}
+\item If $F(x)$ is continuous, then $U=F(X)$ is distributed according to a uniform $[0,1]$ distribution 
+\item Even if $F(x)$ is not continuous, the inequality $\P(F(X)\leq t)\leq t$ is true for all $t\in [0,1]$
+\item If $F^{[-1]}(y)=\inf\{x:F(x)\geq y\}$ ($0<y<1$) and if $U$ is distributed from a uniform $[0,1]$ distribution, 
+then $F^{[-1]}(U)$ is distributed according to $F(x)$ 
+\end{itemize}
+
+\end{slide}
+
+\begin{slide}
+
+To perform probabilistic simulations on a computer, 
+a pseudo-random number generator is used
+
+Such a generator returns a sequence $(x_n)_{n\in\mathbb{N}}$ of real numbers between 0 and 1
+ 
+These numbers are calculated by a deterministic algorithm but imitate a realization of a 
+sequence of iid uniform $[0,1]$ random variables
+
+The good behavior of the sequence is verified by means of statistical tests
+
+\end{slide}
+
+\begin{slide}
+
+A standard method to construct the sequence $(x_n)_{n\in\mathbb{N}}$
+is the congruence $x_n=y_n/N$
+where the $y_n$ are integers such that
+$$
+y_{n+1}=(ay_n+b)\quad\mbox{mod}\quad (N)
+$$
+
+The period of the congruence generator is always smallest 
+than $N-1$
+
+The choice of  $a$, $b$ et $N$ is done such that 
+\begin{itemize}
+\item the period of the generator is the largest as possible 
+\item the sequence $(x_n)_{n\in\mathbb{N}}$ is as close as possible to an iid uniform 
+$[0,1]$ sequence
+\end{itemize}
+
+\end{slide}
+
+\begin{slide}
+
+{\bf Proposition} If $U\sim\mathcal{U}([0,1])$ then $X=a+(b-a)U\sim\mathcal{U}([a,b])$
+
+{\bf Proposition} If $U\sim\mathcal{U}([0,1])$ then $X=\mathbb{I}_{U\leq p}\sim\mathcal{B}(1,p)$ 
+
+{\bf Proposition} If $U_1,\ldots,U_n$ are $n$ iid uniform random variables on $[0,1]$,
+then $\ds X=\sum_{i=1}^n \mathbb{I}_{U_i\leq p}\sim\mathcal{B}(n,p)$
+
+It is always possible to obtain a simulation following a random variable which takes the 
+values $(x_i)_{i\in\mathbb{N}^*}$ with respective probabilities $(p_i)_{i\in\mathbb{N}^*}$ 
+(with $p_i\geq 0$ such as $\sum_{i \in\mathbb{N}^*} p_i = 1$) using a single uniform 
+variable on $[0,1]$
+
+\end{slide}
+
+\begin{slide}
+
+{\bf Proposition} If $U\sim\mathcal{U}([0,1])$, then
+$$
+X=x_1\mathbb{I}_{U\leq p_1}+x_2\mathbb{I}_{p_1<U\leq p_1+p_2}+\ldots+
+x_i\mathbb{I}_{\sum_{j=1}^{i-1}p_j<U\leq \sum_{j=1}^{i}p_j}+\ldots
+$$
+is distributes as a random variable that takes values $(x_i)_{i\in\mathbb{N}^*}$ 
+with associates probabilities $(p_i)_{i\in\mathbb{N}^*}$
+
+Requires coding a loop on $i$ with stopping rule \\ $\sum_{j=1}^{i-1}p_j<U\leq \sum_{j=1}^{i}p_j$ 
+$\Longrightarrow$ it can take a while if the sequence $(p_i)_{i\in\mathbb{N}^*}$ converges slowly to 1.
+
+\end{slide}
+
+\begin{slide}
+
+{\bf Proposition} If $U_1$ and $U_2$ are two $\mathcal{U}([0,1])$ 
+independent random variables, then
+$$
+X_1=\sqrt{-2\ln(U_1)}\cos(2\pi U_2)
+$$
+and
+$$
+X_2=\sqrt{-2\ln(U_1)}\sin(2\pi U_2)
+$$
+are two independent standard Gaussian random variables
+
+Recall that if $X\sim\mathcal{N}(0,1)$ then 
+$\mu+\sigma X\sim\mathcal{N}(\mu,\sigma^2)$
+
+\end{slide}
+
+\section{The accept-reject algorithm}
+
+\begin{slide}
+
+{\bf Target} distribution with pdf $p$ on $\mathbb{R}^d$
+
+{\bf Instrumental} distribution with pdf $q$ on $\mathbb{R}^d$ 
+
+There exists $k\geq1$ such that
+$$
+\forall x\in\mathbb{R}^d,\quad p(x)\leq k q(x)
+$$
+
+\end{slide}
+
+\begin{slide}
+
+\begin{itemize}
+\item[0)] Set i=1
+\item[1)] Generate $Y_i$ from $q$
+\item[2)] Calculate $\ds M=\frac{p(Y_i)}{kq(Y_i)}$
+\item[3)] Generate $U_i\sim\mathcal{U}([0,1])$
+\item[4)] If $U_i>M$, then $i=i+1$ and back $1)$ \\
+If $U_i\leq M$, then $X=Y_i$
+\end{itemize}
+
+\end{slide}
+
+\begin{slide}
+
+Note $N=\inf\{i\geq 1: kq(Y_i)U_i\leq p(Y_i)\}$ ($N$ is a random variable),
+we have $X=Y_N$
+
+{\bf Proposition} $N$ is distributed according to a geometric distribution
+with parameter $1/k$, $\E(N)=k$
+
+$N$ is independent of $(Y_N,kq(Y_N)U_N)$ which is uniformly distributed on
+$$
+\{(x,z)\in\mathbb{R}^d\times \mathbb{R}:0\leq z\leq p(x)\}
+$$
+
+Typically, $X=Y_N$ is distributed from $p$
+
+\end{slide}
+
+\end{document}
+
+

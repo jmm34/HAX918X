@@ -1,0 +1,3 @@
+\beamer@sectionintoc {1}{Bayesian discrimination between models}{3}{0}{1}
+\beamer@sectionintoc {2}{Bayesian Model Averaging}{15}{0}{2}
+\beamer@sectionintoc {3}{Difficulties with the Bayesian model choice paradigm}{16}{0}{3}
