@@ -1,5 +1,0 @@
-\beamer@sectionintoc {1}{The model}{3}{0}{1}
-\beamer@sectionintoc {2}{Natural conjugate prior family}{6}{0}{2}
-\beamer@sectionintoc {3}{Zellner's $G$-prior}{7}{0}{3}
-\beamer@sectionintoc {4}{Model choice}{15}{0}{4}
-\beamer@sectionintoc {5}{Prediction}{17}{0}{5}
